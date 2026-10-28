@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pi Network — Approuver un paiement côté serveur</title>
+  <meta name="description" content="Pourquoi un handler qui renvoie approved:true sans appeler Pi est dangereux, et comment implémenter une approbation serveur fiable.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%237b3fe4'/%3E%3Cpath d='M30 72V28h18a14 14 0 0 1 0 28H40' fill='none' stroke='white' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow"><span class="dot"></span> Pi Network · Server-side</p>
+      <h1>Approuver un paiement<br><span class="accent">avant</span> que l'utilisateur paie.</h1>
+      <p class="lead">
+        Le handler d'origine renvoie <code>{ approved: true }</code> sans jamais contacter Pi.
+        Le client croit que tout va bien, puis Pi rejette le <code>/complete</code> — et
+        n'importe qui peut spammer l'endpoint.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#correction">Voir la correction</a>
+        <a class="btn ghost" href="#demo">Tester le flux</a>
+      </div>
+      <ul class="stats" role="list">
+        <li><strong>1</strong><span>appel serveur à Pi</span></li>
+        <li><strong>0</strong><span>secret dans le client</span></li>
+        <li><strong>100&nbsp;%</strong><span>montant vérifié en base</span></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid two" aria-labelledby="probleme">
+      <article class="card danger">
+        <div class="card-head">
+          <span class="pill danger-pill">Vulnérable</span>
+          <h2 id="probleme">Le code d'origine</h2>
+        </div>
+        <pre><code><span class="c-com">// Approuve côté serveur avant que l'user paie</span>
+<span class="c-key">export async function</span> <span class="c-fn">POST</span>(req) {
+  <span class="c-key">const</span> { paymentId } = <span class="c-key">await</span> req.<span class="c-fn">json</span>()
+  <span class="c-com">// Vérif serveur : fetch(...) — jamais exécutée</span>
+  <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ approved: <span class="c-num">true</span> })
+}</code></pre>
+        <ul class="checks bad" role="list">
+          <li>Aucun appel à <code>/v2/payments/{id}/approve</code></li>
+          <li>Aucune validation du <code>paymentId</code></li>
+          <li>Montant et <code>orderId</code> contrôlés par le client</li>
+          <li>Endpoint ouvert au spam</li>
+        </ul>
+      </article>
+
+      <article class="card success" id="correction">
+        <div class="card-head">
+          <span class="pill success-pill">Corrigé</span>
+          <h2>Les 5 garde-fous</h2>
+        </div>
+        <ol class="steps">
+          <li><span class="num">1</span><div><strong>Refuser si la config manque.</strong> Sans <code>PI_API_KEY</code>, on renvoie une 500 explicite.</div></li>
+          <li><span class="num">2</span><div><strong>Valider l'entrée.</strong> JSON invalide ou <code>paymentId</code> non-string → 400.</div></li>
+          <li><span class="num">3</span><div><strong>Appeler Pi en POST</strong> avec <code>Authorization: Key …</code>, sans body.</div></li>
+          <li><span class="num">4</span><div><strong>Comparer en base :</strong> montant, <code>orderId</code> et <code>uid</code> attendus, jamais ceux du client.</div></li>
+          <li><span class="num">5</span><div><strong>Rendre l'approve idempotent.</strong> « already approved » = succès.</div></li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="card code-card" aria-labelledby="handler">
+      <div class="card-head">
+        <div>
+          <p class="kicker">Exemple complet</p>
+          <h2 id="handler">Le handler vérifié</h2>
+        </div>
+        <span class="file">app/api/pi/approve/route.js</span>
+      </div>
+      <pre class="scroll"><code><span class="c-key">export async function</span> <span class="c-fn">POST</span>(req) {
+  <span class="c-key">if</span> (!process.env.PI_API_KEY) {
+    <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ error: <span class="c-str">"server misconfigured"</span> }, { status: <span class="c-num">500</span> })
+  }
+
+  <span class="c-key">let</span> body
+  <span class="c-key">try</span> { body = <span class="c-key">await</span> req.<span class="c-fn">json</span>() }
+  <span class="c-key">catch</span> { <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ error: <span class="c-str">"invalid json"</span> }, { status: <span class="c-num">400</span> }) }
+
+  <span class="c-key">const</span> { paymentId } = body ?? {}
+  <span class="c-key">if</span> (<span class="c-key">typeof</span> paymentId !== <span class="c-str">"string"</span> || !paymentId) {
+    <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ error: <span class="c-str">"paymentId required"</span> }, { status: <span class="c-num">400</span> })
+  }
+
+  <span class="c-key">const</span> res = <span class="c-key">await</span> <span class="c-fn">fetch</span>(
+    <span class="c-str">`https://api.minepi.com/v2/payments/${encodeURIComponent(paymentId)}/approve`</span>,
+    {
+      method: <span class="c-str">"POST"</span>, <span class="c-com">// pas de body</span>
+      headers: { Authorization: <span class="c-str">`Key ${process.env.PI_API_KEY}`</span> },
+      cache: <span class="c-str">"no-store"</span>,
+    }
+  )
+
+  <span class="c-key">if</span> (!res.ok) {
+    <span class="c-key">const</span> already = res.status === <span class="c-num">400</span> &amp;&amp;
+      (<span class="c-key">await</span> res.<span class="c-fn">clone</span>().<span class="c-fn">text</span>()).<span class="c-fn">includes</span>(<span class="c-str">"already"</span>)
+    <span class="c-key">if</span> (!already) {
+      <span class="c-key">const</span> detail = <span class="c-key">await</span> res.<span class="c-fn">text</span>()
+      <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ error: <span class="c-str">"pi approve failed"</span>, detail }, { status: <span class="c-num">502</span> })
+    }
+  }
+
+  <span class="c-key">const</span> payment = <span class="c-key">await</span> res.<span class="c-fn">json</span>()
+
+  <span class="c-com">// Ne fais jamais confiance au montant ou à l'orderId du client.</span>
+  <span class="c-key">const</span> expected = <span class="c-key">await</span> db.orders.<span class="c-fn">get</span>(payment.metadata?.orderId)
+  <span class="c-key">if</span> (!expected ||
+      payment.amount !== expected.amount ||
+      payment.metadata?.uid !== session.user.id) {
+    <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ error: <span class="c-str">"payment mismatch"</span> }, { status: <span class="c-num">400</span> })
+  }
+
+  <span class="c-key">await</span> db.orders.<span class="c-fn">markApproved</span>(expected.id, payment.identifier)
+  <span class="c-key">return</span> Response.<span class="c-fn">json</span>({ approved: <span class="c-num">true</span> })
+}</code></pre>
+      <div class="note">
+        <strong>Après le paiement :</strong> sur <code>/complete</code>, refais un
+        <code>GET /v2/payments/{id}</code> et vérifie <code>status === "approved"</code>
+        avant de livrer quoi que ce soit.
+      </div>
+    </section>
+
+    <section class="card demo" id="demo" aria-labelledby="demo-title">
+      <div class="card-head">
+        <div>
+          <p class="kicker">Démo locale</p>
+          <h2 id="demo-title">Tester le flux d'approbation</h2>
+        </div>
+        <span class="pill neutral-pill">Simulation</span>
+      </div>
+      <p class="muted">
+        Aucun appel réseau : la démo reproduit les contrôles du handler.
+        Commande attendue : <code>order-42</code>, montant <code>1.00 π</code>, utilisateur <code>demo-user</code>.
+      </p>
+      <form class="demo-form" id="demo-form" novalidate>
+        <label>
+          <span>paymentId</span>
+          <input id="payment-id" name="paymentId" value="pi_pay_9f3a" autocomplete="off" spellcheck="false">
+        </label>
+        <label>
+          <span>Montant reçu (π)</span>
+          <input id="payment-amount" name="amount" type="number" value="1" min="0" step="0.01" inputmode="decimal">
+        </label>
+        <button class="btn primary" type="submit">Approuver</button>
+      </form>
+      <div class="result" id="result" role="status" aria-live="polite">
+        <p class="result-empty">En attente d'une vérification…</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p>Pi Network · approbation serveur · le secret reste dans <code>process.env</code>.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
