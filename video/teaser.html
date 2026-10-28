@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les Sept Portes de Meknès — teaser 3D</title>
+<style>
+  :root{
+    --gold:#e8b96a;
+    --cream:#f4e9d4;
+    --ink:#05070d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:100%;height:100%;background:#000;overflow:hidden;
+    font-family:'FreeSerif',Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased}
+  #stage{position:fixed;inset:0}
+  #stage canvas{display:block;width:100%;height:100%}
+
+  .bar{position:fixed;left:0;right:0;height:0;background:#000;z-index:40;pointer-events:none}
+  .bar.top{top:0}
+  .bar.bottom{bottom:0}
+
+  .vignette{position:fixed;inset:0;z-index:10;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 46%,transparent 32%,rgba(0,0,0,.32) 72%,rgba(0,0,0,.78) 100%)}
+  .warm{position:fixed;inset:0;z-index:11;pointer-events:none;mix-blend-mode:soft-light;
+    background:radial-gradient(circle at 66% 42%,rgba(255,170,90,.35),transparent 55%)}
+  .grain{position:fixed;inset:-4%;z-index:12;pointer-events:none;opacity:.055;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='0.7'/></svg>");
+    background-size:160px 160px}
+
+  #fade{position:fixed;inset:0;background:#000;z-index:50;pointer-events:none;opacity:1}
+
+  .caption{position:fixed;left:7.5%;bottom:17%;z-index:30;opacity:0;
+    color:var(--cream);font-size:clamp(15px,2.1vw,30px);letter-spacing:.015em;
+    text-shadow:0 3px 26px rgba(0,0,0,.75);max-width:60%}
+  .caption::before{content:"";display:block;width:54px;height:2px;background:var(--gold);
+    margin-bottom:15px;opacity:.95}
+
+  .titleblock{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;opacity:0;pointer-events:none;
+    transform:scale(.97);
+    background:radial-gradient(ellipse 62% 55% at 50% 50%,rgba(2,4,9,.62),rgba(2,4,9,.18) 62%,transparent 82%)}
+  .kicker{font-family:'DejaVu Sans',sans-serif;font-size:clamp(10px,1.15vw,15px);
+    letter-spacing:.42em;text-transform:uppercase;color:var(--gold);opacity:.9}
+  .kicker.bottom{margin-top:clamp(14px,2.2vw,28px)}
+  .titleblock h1{font-weight:400;font-size:clamp(46px,9.4vw,168px);line-height:.92;
+    letter-spacing:.045em;color:var(--cream);text-shadow:0 10px 60px rgba(0,0,0,.7)}
+  .titleblock .sub{font-style:italic;font-size:clamp(22px,4vw,66px);color:var(--gold);
+    letter-spacing:.06em;margin-top:clamp(2px,.5vw,10px);text-shadow:0 8px 40px rgba(0,0,0,.7)}
+  .titleblock .ar{font-family:'DejaVu Sans',sans-serif;direction:rtl;
+    font-size:clamp(14px,1.9vw,28px);color:rgba(244,233,212,.72);margin-top:clamp(16px,2.6vw,34px);letter-spacing:.02em}
+  .rule{height:1px;width:0;max-width:min(420px,62vw);margin-top:clamp(14px,2.4vw,30px);
+    background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+  .meta{position:fixed;left:0;right:0;bottom:15%;z-index:30;text-align:center;opacity:0;
+    font-family:'DejaVu Sans',sans-serif;font-size:clamp(11px,1.35vw,18px);letter-spacing:.28em;
+    text-transform:uppercase;color:rgba(244,233,212,.86)}
+  .meta b{color:var(--gold);font-weight:400}
+
+  .endcard{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;opacity:0;pointer-events:none;text-align:center}
+  .endcard .mark{font-size:clamp(22px,3vw,40px);color:var(--gold);margin-bottom:18px;
+    text-shadow:0 0 30px rgba(232,185,106,.7)}
+  .endcard .soon{font-style:italic;font-size:clamp(24px,3.4vw,54px);color:var(--cream);letter-spacing:.04em}
+  .endcard .small{font-family:'DejaVu Sans',sans-serif;font-size:clamp(9px,1.05vw,14px);
+    letter-spacing:.34em;text-transform:uppercase;color:rgba(244,233,212,.72);margin-top:22px}
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+  <div class="warm"></div>
+  <div class="vignette"></div>
+  <div class="grain" id="grain"></div>
+
+  <div class="bar top" id="barTop"></div>
+  <div class="bar bottom" id="barBottom"></div>
+
+  <div class="caption" id="cap1">Meknès, Maroc — à l’aube</div>
+  <div class="caption" id="cap2">Chaque porte garde une histoire.</div>
+  <div class="caption" id="cap3">La dernière garde la ville.</div>
+
+  <div class="titleblock" id="title">
+    <h1>Les Sept Portes</h1>
+    <div class="sub">de Meknès</div>
+    <div class="ar" lang="ar" dir="rtl">البوابات السبع لمكناس</div>
+    <div class="rule" id="rule"></div>
+    <div class="kicker bottom">Une mini-série manga</div>
+  </div>
+
+  <div class="meta" id="meta"><b>6 épisodes</b> · 10 à 30 min · Meknès, Maroc</div>
+
+  <div class="endcard" id="endcard">
+    <div class="mark">✦</div>
+    <div class="soon">Bientôt.</div>
+    <div class="small">Une création originale</div>
+  </div>
+
+  <div id="fade"></div>
+
+<script type="module">
+import * as THREE from './vendor/three.module.js'
+
+const params = new URLSearchParams(location.search)
+const CAPTURE = params.has('capture')
+const DURATION = 38
+
+const W = () => window.innerWidth
+const H = () => window.innerHeight
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true, powerPreference:'high-performance' })
+renderer.setPixelRatio(1)
+renderer.setSize(W(), H())
+renderer.outputColorSpace = THREE.SRGBColorSpace
+renderer.toneMapping = THREE.ACESFilmicToneMapping
+renderer.toneMappingExposure = 1.16
+renderer.setClearColor(0x05070d, 1)
+document.getElementById('stage').appendChild(renderer.domElement)
+
+const scene = new THREE.Scene()
+scene.fog = new THREE.Fog(0x0f1726, 46, 235)
+const camera = new THREE.PerspectiveCamera(46, W()/H(), 0.1, 700)
+camera.position.set(17, 8.8, 62)
+
+const clamp = (v,a,b) => Math.min(b, Math.max(a, v))
+const smooth = (a,b,x) => { const p = clamp((x-a)/(b-a),0,1); return p*p*(3-2*p) }
+const lerp = (a,b,p) => a + (b-a)*p
+
+/* deterministic rng for scene dressing */
+let _seed = 20261028
+const rand = () => { _seed = (_seed*1664525 + 1013904223) >>> 0; return _seed/4294967296 }
+
+/* ---------- textures ---------- */
+function makeCanvas(size){
+  const c = document.createElement('canvas'); c.width = c.height = size
+  return [c, c.getContext('2d')]
+}
+function texFromCanvas(canvas, repeat){
+  const t = new THREE.CanvasTexture(canvas)
+  t.colorSpace = THREE.SRGBColorSpace
+  t.wrapS = t.wrapT = THREE.RepeatWrapping
+  if (repeat) t.repeat.set(repeat[0], repeat[1])
+  t.anisotropy = 8
+  return t
+}
+function starPath(ctx,cx,cy,R,r,points,fill){
+  ctx.beginPath()
+  for (let i=0;i<points*2;i++){
+    const rad = i%2 ? r : R
+    const a = (i/(points*2))*Math.PI*2 - Math.PI/2
+    const x = cx + Math.cos(a)*rad, y = cy + Math.sin(a)*rad
+    i ? ctx.lineTo(x,y) : ctx.moveTo(x,y)
+  }
+  ctx.closePath(); ctx.fillStyle = fill; ctx.fill()
+}
+function zelligeCanvas(){
+  const [c,ctx] = makeCanvas(512)
+  ctx.fillStyle = '#0d2140'; ctx.fillRect(0,0,512,512)
+  const cells = 4, cell = 512/cells
+  ctx.strokeStyle = 'rgba(4,12,28,.85)'; ctx.lineWidth = 3
+  for (let i=0;i<=cells;i++){
+    ctx.beginPath(); ctx.moveTo(i*cell,0); ctx.lineTo(i*cell,512); ctx.stroke()
+    ctx.beginPath(); ctx.moveTo(0,i*cell); ctx.lineTo(512,i*cell); ctx.stroke()
+  }
+  for (let gy=0;gy<cells;gy++) for (let gx=0;gx<cells;gx++){
+    const cx = (gx+.5)*cell, cy = (gy+.5)*cell
+    starPath(ctx,cx,cy,cell*.44,cell*.205,8,'#e7d9b9')
+    starPath(ctx,cx,cy,cell*.225,cell*.105,8,(gx+gy)%2 ? '#2f7d78' : '#b5542f')
+    ctx.fillStyle = '#c9a45c'
+    const rr = cell*.05
+    for (const [dx,dy] of [[0,0],[1,0],[0,1],[1,1]]){
+      ctx.beginPath(); ctx.arc(gx*cell+dx*cell, gy*cell+dy*cell, rr, 0, Math.PI*2); ctx.fill()
+    }
+  }
+  return c
+}
+const zCanvas = zelligeCanvas()
+
+const zelligeWall = texFromCanvas(zCanvas, [0.14, 0.14])
+const zelligeTower = texFromCanvas(zCanvas, [1.35, 2.4])
+
+const [skyC, skyCtx] = makeCanvas(512)
+{
+  const g = skyCtx.createLinearGradient(0,0,0,512)
+  g.addColorStop(0.00,'#05070f')
+  g.addColorStop(0.42,'#0e1830')
+  g.addColorStop(0.68,'#3c2c42')
+  g.addColorStop(0.84,'#a35f3f')
+  g.addColorStop(0.96,'#e2a05d')
+  g.addColorStop(1.00,'#f0b877')
+  skyCtx.fillStyle = g; skyCtx.fillRect(0,0,512,512)
+}
+const skyTex = new THREE.CanvasTexture(skyC)
+skyTex.colorSpace = THREE.SRGBColorSpace
+
+const [glowC, glowCtx] = makeCanvas(256)
+{
+  const g = glowCtx.createRadialGradient(128,128,0,128,128,128)
+  g.addColorStop(0,'rgba(255,222,164,1)')
+  g.addColorStop(.22,'rgba(255,178,98,.55)')
+  g.addColorStop(.6,'rgba(255,140,60,.14)')
+  g.addColorStop(1,'rgba(255,140,60,0)')
+  glowCtx.fillStyle = g; glowCtx.fillRect(0,0,256,256)
+}
+const glowTex = new THREE.CanvasTexture(glowC)
+glowTex.colorSpace = THREE.SRGBColorSpace
+
+/* ---------- sky & sun ---------- */
+const sky = new THREE.Mesh(
+  new THREE.PlaneGeometry(760, 380),
+  new THREE.MeshBasicMaterial({ map:skyTex, fog:false, depthWrite:false })
+)
+sky.position.set(0, 96, -190)
+scene.add(sky)
+
+const sun = new THREE.Sprite(new THREE.SpriteMaterial({
+  map:glowTex, blending:THREE.AdditiveBlending, transparent:true, depthWrite:false, fog:false, opacity:.75
+}))
+sun.position.set(38, 30, -100)
+sun.scale.set(120, 120, 1)
+scene.add(sun)
+
+/* ---------- lights ---------- */
+scene.add(new THREE.HemisphereLight(0x8fa6d8, 0x241a10, 0.62))
+
+const rim = new THREE.DirectionalLight(0xffa864, 1.7)
+rim.position.set(34, 34, -46)
+rim.target.position.set(0, 8, 0)
+scene.add(rim, rim.target)
+
+const fill = new THREE.DirectionalLight(0x6d8bd0, 0.55)
+fill.position.set(-26, 22, 46)
+scene.add(fill)
+
+const portalLight = new THREE.PointLight(0xffb060, 22, 36, 2)
+portalLight.position.set(0, 8, -2.5)
+scene.add(portalLight)
+
+/* ---------- ground ---------- */
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(920, 920),
+  new THREE.MeshStandardMaterial({ color:0x191410, roughness:1, metalness:0 })
+)
+ground.rotation.x = -Math.PI/2
+ground.position.y = -0.05
+scene.add(ground)
+
+const pool = new THREE.Mesh(
+  new THREE.PlaneGeometry(64, 44),
+  new THREE.MeshBasicMaterial({
+    map:glowTex, transparent:true, blending:THREE.AdditiveBlending,
+    depthWrite:false, fog:false, opacity:.16
+  })
+)
+pool.rotation.x = -Math.PI/2
+pool.position.set(0, 0.02, 8)
+scene.add(pool)
+
+/* ---------- gate ---------- */
+const stoneMat = new THREE.MeshStandardMaterial({ color:0x241d16, roughness:.95, metalness:0 })
+const zelligeMat = new THREE.MeshStandardMaterial({
+  map:zelligeWall, roughness:.82, metalness:.06, emissive:0x12224a, emissiveIntensity:.38
+})
+const towerMat = new THREE.MeshStandardMaterial({
+  map:zelligeTower, roughness:.86, metalness:.05, emissive:0x101d3d, emissiveIntensity:.32
+})
+
+const wallShape = new THREE.Shape()
+wallShape.moveTo(-16,0); wallShape.lineTo(16,0); wallShape.lineTo(16,18); wallShape.lineTo(-16,18); wallShape.closePath()
+
+const archHole = new THREE.Path()
+archHole.moveTo(-4.6,0)
+archHole.lineTo(-4.6,8)
+archHole.absarc(0,8,4.6,Math.PI,0,true)
+archHole.lineTo(4.6,0)
+archHole.closePath()
+wallShape.holes.push(archHole)
+
+const wallGeo = new THREE.ExtrudeGeometry(wallShape, { depth:4, bevelEnabled:false, curveSegments:36 })
+wallGeo.translate(0,0,-2)
+const wall = new THREE.Mesh(wallGeo, [zelligeMat, stoneMat])
+scene.add(wall)
+
+for (const sx of [-1, 1]){
+  const tower = new THREE.Mesh(new THREE.BoxGeometry(8,22,7), towerMat)
+  tower.position.set(sx*20.5, 11, -0.5)
+  scene.add(tower)
+  for (let i=0;i<4;i++){
+    const m = new THREE.Mesh(new THREE.BoxGeometry(1.7,1.5,1.5), stoneMat)
+    m.position.set(sx*20.5 - 3.1 + i*2.05, 22.6, 2.4)
+    scene.add(m)
+  }
+}
+
+for (let i=-5;i<=5;i++){
+  const m = new THREE.Mesh(new THREE.BoxGeometry(1.7,1.4,1.4), stoneMat)
+  m.position.set(i*2.8, 18.6, 0.4)
+  scene.add(m)
+}
+
+const creamMat = new THREE.MeshStandardMaterial({
+  color:0xc9a273, roughness:.72, metalness:.05, emissive:0x5a3a18, emissiveIntensity:.55
+})
+const surroundTop = new THREE.Mesh(new THREE.BoxGeometry(15.4, 1.5, .55), creamMat)
+surroundTop.position.set(0, 14.05, 2.0)
+scene.add(surroundTop)
+for (const sx of [-1, 1]){
+  const side = new THREE.Mesh(new THREE.BoxGeometry(1.5, 14.05, .55), creamMat)
+  side.position.set(sx*6.95, 7.02, 2.0)
+  scene.add(side)
+}
+
+const goldMat = new THREE.MeshStandardMaterial({
+  color:0xd8ae66, metalness:.7, roughness:.3, emissive:0x6b451a, emissiveIntensity:1.0
+})
+const arc = new THREE.Mesh(new THREE.TorusGeometry(4.6, .17, 10, 56, Math.PI), goldMat)
+arc.position.set(0, 8, 2.08)
+scene.add(arc)
+for (const sx of [-1, 1]){
+  const jamb = new THREE.Mesh(new THREE.BoxGeometry(.32, 8, .32), goldMat)
+  jamb.position.set(sx*4.6, 4, 2.0)
+  scene.add(jamb)
+}
+
+function starShape(points, R, r){
+  const s = new THREE.Shape()
+  for (let i=0;i<points*2;i++){
+    const rad = i%2 ? r : R
+    const a = (i/(points*2))*Math.PI*2 - Math.PI/2
+    const x = Math.cos(a)*rad, y = Math.sin(a)*rad
+    i ? s.lineTo(x,y) : s.moveTo(x,y)
+  }
+  s.closePath(); return s
+}
+const starMat = new THREE.MeshBasicMaterial({
+  color:0xffe3b0, transparent:true, opacity:0,
+  depthWrite:false, fog:false, side:THREE.DoubleSide
+})
+const star = new THREE.Mesh(new THREE.ShapeGeometry(starShape(8,1,.42)), starMat)
+star.position.set(0, 17.8, 2.25)
+star.scale.setScalar(1.4)
+scene.add(star)
+
+const starGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+  map:glowTex, color:0xffcf8a, blending:THREE.AdditiveBlending,
+  transparent:true, depthWrite:false, fog:false, opacity:0
+}))
+starGlow.position.set(0, 17.8, 2.1)
+starGlow.scale.set(6, 6, 1)
+scene.add(starGlow)
+
+const passage = new THREE.Mesh(
+  new THREE.PlaneGeometry(11.5, 15),
+  new THREE.MeshBasicMaterial({ color:0x06070c, fog:false })
+)
+passage.position.set(0, 7.4, -6.2)
+scene.add(passage)
+
+const portal = new THREE.Sprite(new THREE.SpriteMaterial({
+  map:glowTex, blending:THREE.AdditiveBlending, transparent:true, depthWrite:false, fog:false, opacity:.55
+}))
+portal.position.set(0, 8, -5)
+portal.scale.set(15, 15, 1)
+scene.add(portal)
+
+/* ---------- city ---------- */
+const palette = [0x2b221a, 0x342820, 0x3d2f22, 0x241d17, 0x453528]
+for (let i=0;i<95;i++){
+  const x = (rand()-.5)*210
+  const z = -18 - rand()*125
+  if (Math.abs(x) < 16 && z > -32) continue
+  const w = 4 + rand()*12, h = 3 + rand()*17, d = 4 + rand()*12
+  const mat = new THREE.MeshStandardMaterial({
+    color: palette[(rand()*palette.length)|0], roughness:1, metalness:0
+  })
+  const b = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat)
+  b.position.set(x, h/2, z)
+  b.rotation.y = (rand()-.5)*0.5
+  scene.add(b)
+}
+
+const minaret = new THREE.Group()
+const shaft = new THREE.Mesh(new THREE.BoxGeometry(2.6,30,2.6),
+  new THREE.MeshStandardMaterial({ color:0x3a2d22, roughness:1 }))
+shaft.position.y = 15
+const roof = new THREE.Mesh(new THREE.ConeGeometry(2.4,3.2,4),
+  new THREE.MeshStandardMaterial({ color:0x2f5a45, roughness:.8 }))
+roof.position.y = 31.4
+roof.rotation.y = Math.PI/4
+const lamp = new THREE.Mesh(new THREE.SphereGeometry(.35, 8, 8),
+  new THREE.MeshBasicMaterial({ color:0xffc070, fog:false }))
+lamp.position.set(0, 24, 1.35)
+minaret.add(shaft, roof, lamp)
+minaret.position.set(27, 0, -56)
+scene.add(minaret)
+
+/* ---------- olive trees ---------- */
+const trunkMat = new THREE.MeshStandardMaterial({ color:0x2a2118, roughness:1 })
+const leafMat = new THREE.MeshStandardMaterial({ color:0x26331f, roughness:1 })
+function olive(x,z,s){
+  const g = new THREE.Group()
+  const tr = new THREE.Mesh(new THREE.CylinderGeometry(.18,.34,3.4,7), trunkMat)
+  tr.position.y = 1.7
+  g.add(tr)
+  for (let i=0;i<3;i++){
+    const f = new THREE.Mesh(new THREE.IcosahedronGeometry(1.3,0), leafMat)
+    f.position.set((rand()-.5)*1.3, 3.3 + (rand()-.45)*1.1, (rand()-.5)*1.3)
+    f.scale.set(1,.82,1)
+    g.add(f)
+  }
+  g.position.set(x,0,z)
+  g.scale.setScalar(s)
+  scene.add(g)
+}
+olive(-26,27,1.2); olive(-35,36,1.5); olive(-46,22,1.0)
+olive(28,29,1.15); olive(37,41,1.55); olive(48,25,1.0)
+
+/* ---------- dust ---------- */
+const dustCount = 900
+const dustPos = new Float32Array(dustCount*3)
+for (let i=0;i<dustCount;i++){
+  dustPos[i*3]   = (rand()-.5)*95
+  dustPos[i*3+1] = rand()*34
+  dustPos[i*3+2] = -28 + rand()*95
+}
+const dustGeo = new THREE.BufferGeometry()
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3))
+const dustMat = new THREE.PointsMaterial({
+  color:0xf3d3a0, size:.11, transparent:true, opacity:.4,
+  blending:THREE.AdditiveBlending, depthWrite:false, sizeAttenuation:true
+})
+const dust = new THREE.Points(dustGeo, dustMat)
+scene.add(dust)
+
+/* ---------- birds ---------- */
+const birds = []
+const birdMat = new THREE.LineBasicMaterial({ color:0x12161f, transparent:true, opacity:.9 })
+for (let i=0;i<7;i++){
+  const geo = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-.6,0,0), new THREE.Vector3(0,.28,0), new THREE.Vector3(.6,0,0)
+  ])
+  const l = new THREE.Line(geo, birdMat)
+  l.userData = { r: 38 + i*6.5, ph: i*1.35, y: 27 + i*1.6, sp: .045 + i*.005 }
+  birds.push(l)
+  scene.add(l)
+}
+
+/* ---------- overlay ---------- */
+const $ = id => document.getElementById(id)
+const cue = (id, t, start, end, fade=0.9, rise=16) => {
+  const node = $(id)
+  const a = Math.min(smooth(start, start+fade, t), 1 - smooth(end-fade, end, t), 1)
+  node.style.opacity = a.toFixed(3)
+  node.style.transform = `translateY(${((1-smooth(start, start+fade, t))*rise).toFixed(2)}px)`
+}
+
+function renderAt(t){
+  t = Math.max(0, Math.min(DURATION, t))
+
+  const p = smooth(0, 34, t)
+  camera.position.x = lerp(15, 0.5, p) + Math.sin(t*0.22)*0.22
+  camera.position.y = lerp(9.2, 7.0, p) + Math.sin(t*0.31)*0.12
+  camera.position.z = lerp(64, 42.0, p)
+  camera.lookAt(0, lerp(9.2, 9.6, p), 0)
+  camera.rotation.z = Math.sin(t*0.18)*0.004
+
+  dust.rotation.y = t*0.012
+  dust.position.y = Math.sin(t*0.25)*0.4
+  dustMat.opacity = .36 + .16*Math.sin(t*0.4)
+
+  for (const b of birds){
+    const u = b.userData
+    const a = t*u.sp + u.ph
+    b.position.set(Math.cos(a)*u.r, u.y + Math.sin(t*.5+u.ph)*.5, Math.sin(a)*u.r - 22)
+    b.scale.y = .65 + Math.sin(t*7 + u.ph)*.35
+    b.rotation.y = -a
+  }
+
+  const starIn = smooth(16.5, 21.5, t) * (1 - smooth(31.5, 34.0, t))
+  const pulse = .78 + .22*Math.sin(t*2.2)
+  starMat.opacity = starIn * pulse
+  starGlow.material.opacity = starIn * pulse * .55
+  star.scale.setScalar(1.35 + smooth(16.5, 21.5, t)*0.35 + Math.sin(t*1.4)*0.025)
+  star.rotation.z = t*0.16
+  pool.material.opacity = .13 + .05*Math.sin(t*0.35)
+
+  sun.material.opacity = .6 + .2*Math.sin(t*.28)
+  portal.material.opacity = .34 + .16*Math.sin(t*.5)
+  portalLight.intensity = 22 + 7*Math.sin(t*.5)
+
+  cue('cap1', t, 2.6, 7.4, 1.0)
+  cue('cap2', t, 8.8, 13.6, 1.0)
+  cue('cap3', t, 14.4, 18.8, 1.0)
+  cue('meta', t, 26.0, 33.4, 1.0, 10)
+  cue('endcard', t, 34.2, 37.5, 1.0, 0)
+
+  const titleEl = $('title')
+  const titleA = Math.min(smooth(19.4, 21.4, t), 1 - smooth(30.4, 31.9, t))
+  titleEl.style.opacity = titleA.toFixed(3)
+  titleEl.style.transform = `scale(${(0.965 + smooth(19.4, 21.8, t)*0.035).toFixed(4)})`
+  $('rule').style.width = (smooth(20.6, 23.0, t)*100).toFixed(2) + '%'
+
+  $('fade').style.opacity = Math.max(1 - smooth(0, 2.0, t), smooth(34.8, 37.7, t)).toFixed(3)
+
+  const bar = smooth(0, 2.2, t)*7
+  $('barTop').style.height = bar.toFixed(2) + '%'
+  $('barBottom').style.height = bar.toFixed(2) + '%'
+
+  $('grain').style.transform = `translate(${Math.sin(t*37)*2.2}px, ${Math.cos(t*29)*2.2}px)`
+
+  renderer.render(scene, camera)
+  window.__t = t
+  window.__ended = t >= DURATION - 1e-3
+}
+
+window.renderAt = renderAt
+window.__duration = DURATION
+
+window.addEventListener('resize', () => {
+  camera.aspect = W()/H()
+  camera.updateProjectionMatrix()
+  renderer.setSize(W(), H())
+  renderAt(window.__t || 0)
+})
+
+if (CAPTURE){
+  renderAt(0)
+  window.__ready = true
+} else {
+  const start = performance.now()
+  const loop = now => {
+    renderAt(((now - start)/1000) % (DURATION + 1))
+    requestAnimationFrame(loop)
+  }
+  renderAt(0)
+  window.__ready = true
+  requestAnimationFrame(loop)
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Symbole de l'étoile à huit branches">
+  <defs>
+    <radialGradient id="st" cx=".5" cy=".45" r=".65">
+      <stop offset="0" stop-color="#3c2b52"/>
+      <stop offset=".55" stop-color="#19142b"/>
+      <stop offset="1" stop-color="#080a14"/>
+    </radialGradient>
+    <radialGradient id="stg" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffe9a8" stop-opacity=".85"/>
+      <stop offset=".4" stop-color="#e8b96a" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#e8b96a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="stz" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M30 3 38 22 57 30 38 38 30 57 22 38 3 30 22 22Z" fill="none" stroke="#e8b96a" stroke-width="1" opacity=".2"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#st)"/>
+  <rect width="800" height="800" fill="url(#stz)"/>
+  <circle cx="400" cy="400" r="320" fill="url(#stg)"/>
+  <g fill="none" stroke="#f0c878" stroke-width="7">
+    <path d="M400 120 445 300 625 255 520 400 625 545 445 500 400 680 355 500 175 545 280 400 175 255 355 300Z"/>
+    <path d="M400 200 430 330 560 300 490 400 560 500 430 470 400 600 370 470 240 500 310 400 240 300 370 330Z" opacity=".7"/>
+  </g>
+  <g fill="#f0c878">
+    <circle cx="400" cy="400" r="16"/>
+    <circle cx="400" cy="400" r="34" fill="none" stroke="#f0c878" stroke-width="3" opacity=".7"/>
+  </g>
+  <g fill="#ffe9a8" opacity=".7">
+    <circle cx="160" cy="160" r="4"/><circle cx="640" cy="180" r="3"/><circle cx="660" cy="620" r="4"/>
+    <circle cx="150" cy="620" r="3"/><circle cx="400" cy="80" r="3"/><circle cx="400" cy="720" r="3"/>
+  </g>
+  <g fill="none" stroke="#ffe9a8" opacity=".2">
+    <circle cx="400" cy="400" r="260"/><circle cx="400" cy="400" r="340"/>
+  </g>
+</svg>

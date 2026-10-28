@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Symbole de la branche d'olivier">
+  <defs>
+    <radialGradient id="so" cx=".5" cy=".45" r=".65">
+      <stop offset="0" stop-color="#5d6336"/>
+      <stop offset=".6" stop-color="#333b22"/>
+      <stop offset="1" stop-color="#151a10"/>
+    </radialGradient>
+    <pattern id="soz" width="64" height="64" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M32 3 41 23 61 32 41 41 32 61 23 41 3 32 23 23Z" fill="none" stroke="#e8d79a" stroke-width="1" opacity=".22"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#so)"/>
+  <rect width="800" height="800" fill="url(#soz)"/>
+  <g fill="none" stroke="#c9c27a" stroke-width="10" stroke-linecap="round">
+    <path d="M170 650c90-80 170-170 230-270 50-84 90-170 120-250"/>
+    <path d="M300 500c40-20 80-20 120 0M360 400c40-16 78-12 116 8M430 300c38-12 74-6 108 18"/>
+  </g>
+  <g fill="#a7b06a">
+    <ellipse cx="260" cy="560" rx="52" ry="18" transform="rotate(-40 260 560)"/>
+    <ellipse cx="330" cy="500" rx="52" ry="18" transform="rotate(20 330 500)"/>
+    <ellipse cx="400" cy="430" rx="52" ry="18" transform="rotate(-35 400 430)"/>
+    <ellipse cx="470" cy="360" rx="52" ry="18" transform="rotate(25 470 360)"/>
+    <ellipse cx="520" cy="280" rx="52" ry="18" transform="rotate(-30 520 280)"/>
+    <ellipse cx="560" cy="200" rx="46" ry="16" transform="rotate(30 560 200)"/>
+  </g>
+  <g fill="#d6cf8a" opacity=".75">
+    <ellipse cx="300" cy="540" rx="26" ry="9" transform="rotate(-40 300 540)"/>
+    <ellipse cx="370" cy="470" rx="26" ry="9" transform="rotate(20 370 470)"/>
+    <ellipse cx="440" cy="400" rx="26" ry="9" transform="rotate(-35 440 400)"/>
+    <ellipse cx="500" cy="330" rx="26" ry="9" transform="rotate(25 500 330)"/>
+  </g>
+  <g fill="#2c331c">
+    <circle cx="230" cy="620" r="16"/><circle cx="290" cy="590" r="13"/><circle cx="350" cy="540" r="15"/>
+    <circle cx="410" cy="490" r="12"/><circle cx="470" cy="440" r="14"/><circle cx="530" cy="380" r="11"/>
+    <circle cx="580" cy="320" r="13"/><circle cx="620" cy="250" r="10"/>
+  </g>
+  <g fill="none" stroke="#f0e6b0" opacity=".18">
+    <circle cx="430" cy="400" r="200"/><circle cx="430" cy="400" r="280"/>
+  </g>
+</svg>

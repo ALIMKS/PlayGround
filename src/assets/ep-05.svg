@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-label="Le minaret aux cigognes de Meknès au coucher du soleil">
+  <defs>
+    <linearGradient id="e5sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3c2145"/>
+      <stop offset=".35" stop-color="#8c3c4a"/>
+      <stop offset=".68" stop-color="#d97450"/>
+      <stop offset="1" stop-color="#f3b96c"/>
+    </linearGradient>
+    <radialGradient id="e5sun" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#fff2c8" stop-opacity=".98"/>
+      <stop offset=".4" stop-color="#ffce7a" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ffce7a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="e5tower" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2c1a24"/>
+      <stop offset=".6" stop-color="#1a1119"/>
+      <stop offset="1" stop-color="#0e0a10"/>
+    </linearGradient>
+    <pattern id="e5z" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M30 3 38 22 57 30 38 38 30 57 22 38 3 30 22 22Z" fill="none" stroke="#f0b76b" stroke-width="1" opacity=".4"/>
+    </pattern>
+    <pattern id="e5grain" width="7" height="7" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r=".8" fill="#fff" opacity=".05"/>
+      <circle cx="4.5" cy="4.5" r=".6" fill="#000" opacity=".08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="800" fill="url(#e5sky)"/>
+  <circle cx="300" cy="430" r="300" fill="url(#e5sun)"/>
+  <circle cx="300" cy="430" r="92" fill="#ffe6b0" opacity=".9"/>
+  <rect width="1200" height="800" fill="url(#e5grain)"/>
+
+  <g fill="#3a2238" opacity=".55">
+    <path d="M0 560h80v-50h20v50h100v-80h24v80h90v-40h16v40h110v-70h24v70h90v-30h18v30h120v-60h22v60h100v-44h18v44h120v-76h24v76h90v-36h18v36h100v-58h20v58h80v240H0Z"/>
+  </g>
+
+  <g fill="#160f18">
+    <path d="M560 800V330h80v470Z"/>
+    <path d="M544 330h112l-10-34h-92Z"/>
+    <path d="M568 296h64l-8-30h-48Z"/>
+    <path d="M584 266h32l-6-40h-20Z"/>
+    <path d="M594 226h12v-18h-12Z"/>
+    <path d="M590 208h20l-10-24Z"/>
+    <rect x="560" y="420" width="80" height="10"/>
+    <rect x="560" y="520" width="80" height="10"/>
+    <rect x="560" y="620" width="80" height="10"/>
+    <rect x="560" y="720" width="80" height="10"/>
+  </g>
+  <path d="M560 800V330h80v470Z" fill="url(#e5z)" opacity=".35"/>
+
+  <g fill="#0f0a12">
+    <path d="M520 800V620q0-40 40-40t40 40v180Z"/>
+    <path d="M600 800V620q0-40 40-40t40 40v180Z"/>
+    <path d="M420 800V680q0-30 30-30t30 30v120Z"/>
+    <path d="M720 800V680q0-30 30-30t30 30v120Z"/>
+  </g>
+
+  <g fill="none" stroke="#f0b76b" stroke-width="2" opacity=".5">
+    <path d="M560 800V330h80v470"/>
+    <path d="M544 330h112l-10-34h-92Z"/>
+    <path d="M568 296h64l-8-30h-48Z"/>
+  </g>
+
+  <g fill="#120d14">
+    <circle cx="760" cy="300" r="10"/>
+    <path d="M752 300c0-10 4-18 10-22-2 8 0 16 4 22Z"/>
+    <path d="M768 300c2-12 8-18 14-20-4 8-6 14-2 20Z"/>
+    <path d="M754 318c-4 14-4 26 0 38l6-2c-2-12 0-22 4-34Z"/>
+    <path d="M766 318c4 14 4 26 0 38l-6-2c2-12 0-22-4-34Z"/>
+    <path d="M760 356v54h-8v-54zM768 356v54h-8v-54z"/>
+  </g>
+
+  <g fill="#120d14">
+    <circle cx="500" cy="380" r="8"/>
+    <path d="M494 380c0-8 3-14 8-18-2 8 0 14 3 18Z"/>
+    <path d="M508 380c2-10 6-14 12-16-4 6-5 12-2 16Z"/>
+    <path d="M496 396c-4 12-4 22 0 32l5-2c-2-10 0-18 3-28Z"/>
+    <path d="M506 396c4 12 4 22 0 32l-5-2c2-10 0-18-3-28Z"/>
+    <path d="M500 428v46h-7v-46zM507 428v46h-7v-46z"/>
+  </g>
+
+  <g fill="#1a1119">
+    <path d="M840 210c-10-6-18-6-28 0 6-10 16-14 28-10Z"/>
+    <path d="M840 210c8-8 18-10 28-6-8 2-14 6-18 14Z"/>
+    <path d="M840 210c-6 8-6 18 0 28-10-6-14-16-10-28Z"/>
+    <path d="M840 210c8 6 10 16 6 26-2-8-6-14-14-18Z"/>
+    <path d="M840 210c-6-2-10-8-8-14 4 4 8 6 14 6Z"/>
+  </g>
+
+  <g fill="#1a1119">
+    <path d="M1000 280c-8-5-15-5-23 0 5-8 13-12 23-8Z"/>
+    <path d="M1000 280c7-7 15-8 23-5-7 2-12 5-15 12Z"/>
+    <path d="M1000 280c-5 7-5 15 0 23-8-5-12-13-8-23Z"/>
+    <path d="M1000 280c7 5 8 13 5 22-2-7-5-12-12-15Z"/>
+  </g>
+
+  <g fill="none" stroke="#f0b76b" opacity=".18">
+    <circle cx="760" cy="300" r="40"/>
+    <circle cx="760" cy="300" r="76"/>
+    <circle cx="500" cy="380" r="34"/>
+  </g>
+
+  <g fill="#ffe6b0" opacity=".6">
+    <circle cx="120" cy="180" r="2"/><circle cx="240" cy="120" r="1.4"/><circle cx="420" cy="160" r="1.8"/>
+    <circle cx="680" cy="110" r="1.5"/><circle cx="900" cy="140" r="2"/><circle cx="1080" cy="100" r="1.3"/>
+    <circle cx="1140" cy="220" r="1.6"/><circle cx="80" cy="300" r="1.2"/>
+  </g>
+
+  <path d="M0 800c140-30 280-42 420-36 140 6 280 26 420 24 120-2 240-18 360-26v38H0Z" fill="#0a070c"/>
+  <rect width="1200" height="800" fill="url(#e5z)" opacity=".05"/>
+</svg>

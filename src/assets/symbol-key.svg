@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Symbole de la clé de laiton">
+  <defs>
+    <radialGradient id="sk" cx=".5" cy=".45" r=".65">
+      <stop offset="0" stop-color="#1c5a60"/>
+      <stop offset=".6" stop-color="#0d2f38"/>
+      <stop offset="1" stop-color="#071820"/>
+    </radialGradient>
+    <radialGradient id="skg" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffe9a8" stop-opacity=".9"/>
+      <stop offset=".4" stop-color="#f0bd55" stop-opacity=".4"/>
+      <stop offset="1" stop-color="#f0bd55" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="skz" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M30 3 38 22 57 30 38 38 30 57 22 38 3 30 22 22Z" fill="none" stroke="#8fd8cf" stroke-width="1" opacity=".25"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#sk)"/>
+  <rect width="800" height="800" fill="url(#skz)"/>
+  <circle cx="400" cy="380" r="250" fill="url(#skg)"/>
+  <g transform="translate(400 380) rotate(-18)">
+    <circle cx="0" cy="-90" r="80" fill="none" stroke="#f6cf72" stroke-width="24"/>
+    <circle cx="0" cy="-90" r="44" fill="#0d2f38"/>
+    <circle cx="0" cy="-90" r="54" fill="none" stroke="#b9862e" stroke-width="5" opacity=".7"/>
+    <path d="M-14 -12h28v280h-28Z" fill="#e5b24d"/>
+    <path d="M14 150h76v24H14ZM14 196h54v24H14ZM14 242h76v24H14Z" fill="#e5b24d"/>
+    <path d="M-14 -12h8v280h-8Z" fill="#f7d98d" opacity=".75"/>
+    <path d="M-14 0c-34 14-50 44-50 76" fill="none" stroke="#e5b24d" stroke-width="12"/>
+  </g>
+  <g fill="#ffe9a8" opacity=".6">
+    <circle cx="220" cy="220" r="4"/><circle cx="580" cy="190" r="3"/><circle cx="620" cy="330" r="4"/>
+    <circle cx="180" cy="400" r="3"/><circle cx="600" cy="560" r="4"/><circle cx="240" cy="600" r="3"/>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Symbole de la porte">
+  <defs>
+    <radialGradient id="sg" cx=".5" cy=".45" r=".65">
+      <stop offset="0" stop-color="#3b2b4a"/>
+      <stop offset=".6" stop-color="#181426"/>
+      <stop offset="1" stop-color="#080a12"/>
+    </radialGradient>
+    <pattern id="sgz" width="64" height="64" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M32 3 41 23 61 32 41 41 32 61 23 41 3 32 23 23Z" fill="none" stroke="#e8b96a" stroke-width="1" opacity=".3"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="800" fill="url(#sg)"/>
+  <rect width="800" height="800" fill="url(#sgz)"/>
+  <g fill="none" stroke="#e8b96a" stroke-width="8" opacity=".9">
+    <path d="M220 660V360q0-120 180-120t180 120v300"/>
+    <path d="M270 660V380q0-80 130-80t130 80v280"/>
+    <path d="M160 660V330q0-180 240-180t240 180v330" opacity=".5"/>
+  </g>
+  <g fill="#e8b96a" opacity=".8">
+    <circle cx="400" cy="350" r="12"/>
+    <path d="M392 350h16v50h-16z"/>
+    <path d="M330 660V450q0-40 40-40t40 40v210Z" opacity=".35"/>
+    <path d="M390 660V450q0-40 40-40t40 40v210Z" opacity=".35"/>
+    <path d="M450 660V450q0-40 40-40t40 40v210Z" opacity=".35"/>
+  </g>
+  <g fill="none" stroke="#f6d79a" stroke-width="2" opacity=".5">
+    <circle cx="400" cy="350" r="60"/><circle cx="400" cy="350" r="100"/>
+  </g>
+</svg>
