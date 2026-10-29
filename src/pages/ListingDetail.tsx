@@ -118,7 +118,7 @@ export function ListingDetail() {
       setErrorKey('booking.guestsOver')
       return
     }
-    const totalUsd = quote ? quote.total / quote.fxRate : 0
+    const totalUsd = quote ? quote.total : 0
     if (totalUsd > 500 && user.idStatus !== 'verified') {
       setVerifyPrompt(true)
       return

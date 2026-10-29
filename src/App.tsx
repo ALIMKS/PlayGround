@@ -30,7 +30,7 @@ export function App() {
               <Route path="/search" element={<Search />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/checkout/:id" element={<Checkout />} />
-              <Route path="/confirmation/:bookingId" element={<Confirmation />} />
+              <Route path="/confirmation/:id" element={<Confirmation />} />
               <Route path="/trips" element={<Trips />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/login" element={<Auth />} />

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import {
   ArrowRight,
   CalendarDays,
-  CreditCard,
   Home as HomeIcon,
   MessageCircle,
   Search,
@@ -120,7 +119,7 @@ export function Help() {
               {articles.map((article) => (
                 <Link to={article.href} className="help-article" key={article.key}>
                   <span className="help-article-icon">
-                    <CreditCard size={18} />
+                    {(() => { const Icon = CATEGORY_ICONS[article.category]; return <Icon size={18} /> })()}
                   </span>
                   <div>
                     <strong>{t(`help.article${article.key}`)}</strong>

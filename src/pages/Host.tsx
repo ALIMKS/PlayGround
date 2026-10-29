@@ -187,8 +187,7 @@ export function Host() {
   const today = todayISO()
 
   const revenueUsd = (booking: Booking) => {
-    const net = hostNet(booking)
-    return booking.quote.fxRate ? net / booking.quote.fxRate : net
+    return hostNet(booking)
   }
 
   const revenue30 = activeBookings
@@ -214,7 +213,7 @@ export function Host() {
   const lifetime = activeBookings.reduce((sum, booking) => sum + revenueUsd(booking), 0)
   const grossLifetime = activeBookings.reduce((sum, booking) => {
     const base = booking.quote.subtotal - booking.quote.discount + booking.quote.cleaning
-    return sum + (booking.quote.fxRate ? base / booking.quote.fxRate : base)
+    return sum + base
   }, 0)
   const feeLifetime = grossLifetime - lifetime
 
@@ -552,7 +551,7 @@ export function Host() {
                   {[...activeBookings].sort((a, b) => b.checkIn.localeCompare(a.checkIn)).slice(0, 10).map((booking) => {
                     const net = revenueUsd(booking)
                     const grossBase = booking.quote.subtotal - booking.quote.discount + booking.quote.cleaning
-                    const gross = booking.quote.fxRate ? grossBase / booking.quote.fxRate : grossBase
+                    const gross = grossBase
                     return (
                       <div className="table-row" key={booking.id}>
                         <div>

@@ -120,7 +120,7 @@ export function Checkout() {
     )
   }
 
-  const totalUsd = quote.total / quote.fxRate
+  const totalUsd = quote.total
   if (totalUsd > 500 && user.idStatus !== 'verified') {
     return (
       <div className="container page-pad">

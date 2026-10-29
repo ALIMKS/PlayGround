@@ -44,11 +44,8 @@ export function Admin() {
   }
 
   const bookings = data.bookings.filter((booking) => booking.status !== 'cancelled')
-  const gmv = bookings.reduce((sum, booking) => sum + (booking.quote.fxRate ? booking.quote.total / booking.quote.fxRate : booking.quote.total), 0)
-  const fees = bookings.reduce((sum, booking) => {
-    const rate = booking.quote.fxRate || 1
-    return sum + (booking.quote.service + (booking.quote.subtotal - booking.quote.discount) * 0.03) / rate
-  }, 0)
+  const gmv = bookings.reduce((sum, booking) => sum + booking.quote.total, 0)
+  const fees = bookings.reduce((sum, booking) => sum + booking.quote.service + (booking.quote.subtotal - booking.quote.discount) * 0.03, 0)
   const takeRate = gmv ? Math.round((fees / gmv) * 1000) / 10 : 0
   const pending = data.verifications.filter((request) => request.status === 'pending')
   const activeListings = data.listings.filter((listing) => listing.status === 'published').length
@@ -60,7 +57,7 @@ export function Admin() {
       if (!listing) continue
       const key = listing.countryCode
       const current = map.get(key) ?? { country: listing.country, volume: 0, count: 0 }
-      current.volume += booking.quote.fxRate ? booking.quote.total / booking.quote.fxRate : booking.quote.total
+      current.volume += booking.quote.total
       current.count += 1
       map.set(key, current)
     }

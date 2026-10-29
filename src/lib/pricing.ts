@@ -25,13 +25,13 @@ export function calculateQuote(
 
   return {
     nights,
-    nightly: round(nightlyBase * fxRate),
-    subtotal: round(subtotalBase * fxRate),
-    discount: round(discountBase * fxRate),
-    cleaning: round(cleaningBase * fxRate),
-    service: round(serviceBase * fxRate),
-    taxes: round(taxesBase * fxRate),
-    total: round(totalBase * fxRate),
+    nightly: round(nightlyBase),
+    subtotal: round(subtotalBase),
+    discount: round(discountBase),
+    cleaning: round(cleaningBase),
+    service: round(serviceBase),
+    taxes: round(taxesBase),
+    total: round(totalBase),
     currency,
     fxRate,
     discountLabel: discountRate ? `${Math.round(discountRate * 100)}%` : '',
@@ -75,7 +75,7 @@ export function hostNet(booking: Booking): number {
 }
 
 export function bookingTotalUsd(booking: Booking): number {
-  return booking.quote.fxRate ? booking.quote.total / booking.quote.fxRate : booking.quote.total
+  return booking.quote.total
 }
 
 export function refundDeadline(booking: Booking, policy: CancellationPolicy): string {
